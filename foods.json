@@ -1,0 +1,190 @@
+[
+  {
+    "id": "spinach",
+    "name": "Spinach, raw",
+    "category": "vegetable",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin K", "amount": 483, "unit": "mcg", "context": "Supports normal blood clotting." },
+      { "name": "Vitamin A", "amount": 469, "unit": "mcg", "context": "Needed for normal vision and immune function." },
+      { "name": "Folate", "amount": 194, "unit": "mcg", "context": "Needed for cell division and forming DNA." },
+      { "name": "Vitamin C", "amount": 28.1, "unit": "mg", "context": "Supports immune function and helps absorb iron." },
+      { "name": "Iron", "amount": 2.7, "unit": "mg", "context": "Needed to carry oxygen in the blood." }
+    ]
+  },
+  {
+    "id": "kale",
+    "name": "Kale, raw",
+    "category": "vegetable",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin K", "amount": 704.8, "unit": "mcg", "context": "Supports normal blood clotting." },
+      { "name": "Vitamin C", "amount": 93.4, "unit": "mg", "context": "Supports immune function and collagen formation." },
+      { "name": "Vitamin A", "amount": 241, "unit": "mcg", "context": "Needed for normal vision and immune function." },
+      { "name": "Calcium", "amount": 150, "unit": "mg", "context": "Needed for bone structure and muscle function." }
+    ]
+  },
+  {
+    "id": "sweet-potato",
+    "name": "Sweet potato, raw",
+    "category": "vegetable",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin A", "amount": 709, "unit": "mcg", "context": "Needed for normal vision and immune function." },
+      { "name": "Vitamin C", "amount": 2.4, "unit": "mg", "context": "Supports immune function and collagen formation." },
+      { "name": "Potassium", "amount": 337, "unit": "mg", "context": "Helps regulate fluid balance and blood pressure." },
+      { "name": "Vitamin B6", "amount": 0.2, "unit": "mg", "context": "Involved in protein metabolism and red blood cell formation." }
+    ]
+  },
+  {
+    "id": "broccoli",
+    "name": "Broccoli, raw",
+    "category": "vegetable",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin C", "amount": 89.2, "unit": "mg", "context": "Supports immune function and collagen formation." },
+      { "name": "Vitamin K", "amount": 101.6, "unit": "mcg", "context": "Supports normal blood clotting." },
+      { "name": "Folate", "amount": 63, "unit": "mcg", "context": "Needed for cell division and forming DNA." }
+    ]
+  },
+  {
+    "id": "banana",
+    "name": "Banana, raw",
+    "category": "fruit",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin B6", "amount": 0.4, "unit": "mg", "context": "Involved in protein metabolism and red blood cell formation." },
+      { "name": "Vitamin C", "amount": 8.7, "unit": "mg", "context": "Supports immune function and collagen formation." },
+      { "name": "Potassium", "amount": 358, "unit": "mg", "context": "Helps regulate fluid balance and blood pressure." },
+      { "name": "Magnesium", "amount": 27, "unit": "mg", "context": "Involved in muscle and nerve function." }
+    ]
+  },
+  {
+    "id": "orange",
+    "name": "Orange, raw",
+    "category": "fruit",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin C", "amount": 53.2, "unit": "mg", "context": "Supports immune function and collagen formation." },
+      { "name": "Folate", "amount": 30, "unit": "mcg", "context": "Needed for cell division and forming DNA." },
+      { "name": "Thiamin", "amount": 0.09, "unit": "mg", "context": "Helps convert food into energy." }
+    ]
+  },
+  {
+    "id": "blueberries",
+    "name": "Blueberries, raw",
+    "category": "fruit",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin C", "amount": 9.7, "unit": "mg", "context": "Supports immune function and collagen formation." },
+      { "name": "Vitamin K", "amount": 19.3, "unit": "mcg", "context": "Supports normal blood clotting." },
+      { "name": "Manganese", "amount": 0.34, "unit": "mg", "context": "Involved in bone formation and metabolism." }
+    ]
+  },
+  {
+    "id": "avocado",
+    "name": "Avocado, raw",
+    "category": "fruit",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin K", "amount": 21, "unit": "mcg", "context": "Supports normal blood clotting." },
+      { "name": "Folate", "amount": 81, "unit": "mcg", "context": "Needed for cell division and forming DNA." },
+      { "name": "Vitamin E", "amount": 2.1, "unit": "mg", "context": "Acts as an antioxidant, protecting cells from damage." },
+      { "name": "Potassium", "amount": 485, "unit": "mg", "context": "Helps regulate fluid balance and blood pressure." }
+    ]
+  },
+  {
+    "id": "almonds",
+    "name": "Almonds, raw",
+    "category": "nuts and seeds",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin E", "amount": 25.6, "unit": "mg", "context": "Acts as an antioxidant, protecting cells from damage." },
+      { "name": "Magnesium", "amount": 270, "unit": "mg", "context": "Involved in muscle and nerve function." },
+      { "name": "Riboflavin", "amount": 1.1, "unit": "mg", "context": "Helps convert food into energy." }
+    ]
+  },
+  {
+    "id": "salmon",
+    "name": "Salmon, Atlantic, raw",
+    "category": "seafood",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin D", "amount": 11, "unit": "mcg", "context": "Supports calcium absorption and bone health." },
+      { "name": "Vitamin B12", "amount": 3.2, "unit": "mcg", "context": "Needed for nerve function and forming red blood cells." },
+      { "name": "Niacin", "amount": 8.7, "unit": "mg", "context": "Helps convert food into energy." },
+      { "name": "Selenium", "amount": 36.5, "unit": "mcg", "context": "Acts as an antioxidant and supports thyroid function." }
+    ]
+  },
+  {
+    "id": "egg",
+    "name": "Egg, whole, raw",
+    "category": "dairy and eggs",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin B12", "amount": 0.89, "unit": "mcg", "context": "Needed for nerve function and forming red blood cells." },
+      { "name": "Vitamin D", "amount": 2, "unit": "mcg", "context": "Supports calcium absorption and bone health." },
+      { "name": "Choline", "amount": 293.8, "unit": "mg", "context": "Needed for normal liver function and cell structure." },
+      { "name": "Selenium", "amount": 30.7, "unit": "mcg", "context": "Acts as an antioxidant and supports thyroid function." }
+    ]
+  },
+  {
+    "id": "greek-yogurt",
+    "name": "Greek yogurt, plain",
+    "category": "dairy and eggs",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Vitamin B12", "amount": 0.75, "unit": "mcg", "context": "Needed for nerve function and forming red blood cells." },
+      { "name": "Calcium", "amount": 110, "unit": "mg", "context": "Needed for bone structure and muscle function." },
+      { "name": "Riboflavin", "amount": 0.28, "unit": "mg", "context": "Helps convert food into energy." }
+    ]
+  },
+  {
+    "id": "chicken-breast",
+    "name": "Chicken breast, raw",
+    "category": "meat and poultry",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Niacin", "amount": 13.7, "unit": "mg", "context": "Helps convert food into energy." },
+      { "name": "Vitamin B6", "amount": 0.6, "unit": "mg", "context": "Involved in protein metabolism and red blood cell formation." },
+      { "name": "Selenium", "amount": 22.5, "unit": "mcg", "context": "Acts as an antioxidant and supports thyroid function." }
+    ]
+  },
+  {
+    "id": "lentils",
+    "name": "Lentils, raw",
+    "category": "legumes",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Folate", "amount": 479, "unit": "mcg", "context": "Needed for cell division and forming DNA." },
+      { "name": "Iron", "amount": 7.5, "unit": "mg", "context": "Needed to carry oxygen in the blood." },
+      { "name": "Thiamin", "amount": 0.87, "unit": "mg", "context": "Helps convert food into energy." }
+    ]
+  },
+  {
+    "id": "brown-rice",
+    "name": "Brown rice, raw",
+    "category": "grains",
+    "per": "100g",
+    "source": "USDA FoodData Central",
+    "nutrients": [
+      { "name": "Manganese", "amount": 3.7, "unit": "mg", "context": "Involved in bone formation and metabolism." },
+      { "name": "Magnesium", "amount": 143, "unit": "mg", "context": "Involved in muscle and nerve function." },
+      { "name": "Thiamin", "amount": 0.4, "unit": "mg", "context": "Helps convert food into energy." }
+    ]
+  }
+]
