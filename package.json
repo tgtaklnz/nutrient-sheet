@@ -1,9 +1,0 @@
-{
-  "name": "nutrient-lookup",
-  "version": "1.0.0",
-  "description": "Search a food or plant to see its vitamin and mineral content.",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  }
-}
