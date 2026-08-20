@@ -8,8 +8,6 @@ let debounceTimer = null;
 let activeIndex = -1;
 let currentSuggestions = [];
 
-// Which section a nutrient belongs in. Anything not matched here falls
-// through to "Minerals" (the catch-all secondary section).
 const VITAMIN_NAMES = new Set([
   'Vitamin A', 'Vitamin B6', 'Vitamin B12', 'Vitamin C', 'Vitamin D',
   'Vitamin E', 'Vitamin K', 'Folate', 'Niacin', 'Riboflavin', 'Thiamin', 'Choline'
@@ -17,6 +15,22 @@ const VITAMIN_NAMES = new Set([
 const MACRO_NAMES = new Set(['Carbohydrate', 'Protein', 'Fat']);
 const CALORIE_NAME = 'Calories';
 const FIBER_NAME = 'Fiber';
+
+const CATEGORY_COLORS = {
+  'vegetable': '#2f5233',
+  'fruit': '#c1442e',
+  'grains': '#b8860b',
+  'legumes': '#8a6d3b',
+  'nuts and seeds': '#7c5c3e',
+  'meat and poultry': '#a63446',
+  'seafood': '#1f6f78',
+  'dairy and eggs': '#5b7fbd',
+  'herbs and spices': '#6a4c93'
+};
+
+function categoryColor(category) {
+  return CATEGORY_COLORS[(category || '').toLowerCase()] || '#8a8a80';
+}
 
 async function loadFoods() {
   try {
@@ -35,21 +49,42 @@ function debounce(fn, delay) {
   debounceTimer = setTimeout(fn, delay);
 }
 
+// Ranked search: exact match first, then starts-with, then contains,
+// checking name, id, aliases, and finally category. Lower score = better.
 function findSuggestions(query) {
-  const q = query.toLowerCase();
-  return foods
-    .filter(food =>
-      food.name.toLowerCase().includes(q) ||
-      food.id.toLowerCase().includes(q) ||
-      food.category.toLowerCase().includes(q)
-    )
-    .slice(0, 8);
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+
+  const scored = [];
+  for (const food of foods) {
+    const name = food.name.toLowerCase();
+    const id = food.id.toLowerCase();
+    const aliases = (food.aliases || []).map((a) => a.toLowerCase());
+    const category = food.category.toLowerCase();
+
+    let score = null;
+    if (name === q || id === q || aliases.includes(q)) {
+      score = 0;
+    } else if (name.startsWith(q) || id.startsWith(q) || aliases.some((a) => a.startsWith(q))) {
+      score = 1;
+    } else if (name.includes(q) || aliases.some((a) => a.includes(q))) {
+      score = 2;
+    } else if (category.includes(q)) {
+      score = 3;
+    }
+
+    if (score !== null) scored.push({ food, score });
+  }
+
+  scored.sort((a, b) => a.score - b.score || a.food.name.localeCompare(b.food.name));
+  return scored.slice(0, 8).map((s) => s.food);
 }
 
 function findFood(id) {
   const q = String(id).toLowerCase();
-  return foods.find(food => food.id.toLowerCase() === q) ||
-         foods.find(food => food.name.toLowerCase() === q) ||
+  return foods.find((food) => food.id.toLowerCase() === q) ||
+         foods.find((food) => food.name.toLowerCase() === q) ||
+         foods.find((food) => (food.aliases || []).some((a) => a.toLowerCase() === q)) ||
          null;
 }
 
@@ -66,9 +101,12 @@ function renderSuggestions(items) {
   suggestionsEl.innerHTML = items
     .map(
       (item, i) => `
-      <li><button type="button" data-id="${item.id}" data-index="${i}">
-        ${item.name} <span class="category">&middot; ${item.category}</span>
-      </button></li>`
+      <li style="border-left: 4px solid ${categoryColor(item.category)}">
+        <button type="button" data-id="${item.id}" data-index="${i}">
+          <span>${item.name}</span>
+          <span class="cat-badge" style="background:${categoryColor(item.category)}">${item.category}</span>
+        </button>
+      </li>`
     )
     .join('');
 
@@ -95,13 +133,13 @@ function renderResult(food) {
     return;
   }
 
-  const vitamins = food.nutrients.filter(n => VITAMIN_NAMES.has(n.name));
-  const macros = food.nutrients.filter(n => MACRO_NAMES.has(n.name));
-  const calorieEntry = food.nutrients.find(n => n.name === CALORIE_NAME);
-  const fiberEntry = food.nutrients.find(n => n.name === FIBER_NAME);
+  const vitamins = food.nutrients.filter((n) => VITAMIN_NAMES.has(n.name));
+  const macros = food.nutrients.filter((n) => MACRO_NAMES.has(n.name));
+  const calorieEntry = food.nutrients.find((n) => n.name === CALORIE_NAME);
+  const fiberEntry = food.nutrients.find((n) => n.name === FIBER_NAME);
   const minerals = food.nutrients.filter(
-    n => !VITAMIN_NAMES.has(n.name) && !MACRO_NAMES.has(n.name) &&
-         n.name !== CALORIE_NAME && n.name !== FIBER_NAME
+    (n) => !VITAMIN_NAMES.has(n.name) && !MACRO_NAMES.has(n.name) &&
+           n.name !== CALORIE_NAME && n.name !== FIBER_NAME
   );
 
   const statLine = [
@@ -134,7 +172,10 @@ function renderResult(food) {
 
   resultEl.innerHTML = `
     <div class="result-head">
-      <p class="result-name">${food.name}</p>
+      <div class="result-name-row">
+        <p class="result-name">${food.name}</p>
+        <span class="cat-badge" style="background:${categoryColor(food.category)}">${food.category}</span>
+      </div>
       <p class="result-meta">Per ${food.per}${food.householdServing ? ` &middot; ${food.householdServing}` : ''}</p>
       ${statLine ? `<p class="result-stat-line">${statLine}</p>` : ''}
     </div>
@@ -158,7 +199,6 @@ input.addEventListener('input', () => {
     suggestionsEl.classList.add('hidden');
     return;
   }
-
   debounce(() => {
     renderSuggestions(findSuggestions(query));
   }, 150);
@@ -203,6 +243,17 @@ document.querySelectorAll('.chip').forEach((chip) => {
   chip.addEventListener('click', () => {
     input.value = chip.dataset.food;
     selectFood(chip.dataset.food);
+  });
+});
+
+// Category browsing: shows every food in that category in the suggestions list.
+document.querySelectorAll('.cat-chip').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    const category = chip.dataset.category.toLowerCase();
+    const matches = foods.filter((f) => f.category.toLowerCase() === category);
+    input.value = '';
+    input.focus();
+    renderSuggestions(matches);
   });
 });
 
