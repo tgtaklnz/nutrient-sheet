@@ -258,7 +258,7 @@ document.querySelectorAll('.cat-chip').forEach((chip) => {
 });
 
 document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-wrap') && !e.target.closest('.category-chips')) { {
+  if (!e.target.closest('.search-wrap') && !e.target.closest('.category-chips')) {
     suggestionsEl.classList.add('hidden');
   }
 });
