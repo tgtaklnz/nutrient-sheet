@@ -43,8 +43,20 @@ body {
   font-family: var(--font-display);
   font-size: 44px;
   font-weight: 700;
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.75rem;
   letter-spacing: -0.01em;
+}
+
+.rainbow-bar {
+  height: 6px;
+  max-width: 280px;
+  margin: 0 auto 1.25rem;
+  border-radius: 3px;
+  background: linear-gradient(
+    90deg,
+    #2f5233 0%, #c1442e 14%, #b8860b 28%, #8a6d3b 42%,
+    #7c5c3e 56%, #a63446 70%, #1f6f78 84%, #5b7fbd 94%, #6a4c93 100%
+  );
 }
 
 .tagline {
@@ -83,26 +95,32 @@ body {
   border-top: none;
   z-index: 5;
   text-align: left;
-  max-height: 260px;
+  max-height: 320px;
   overflow-y: auto;
 }
 
+.suggestions li {
+  border-bottom: 1px solid var(--line-soft);
+}
+.suggestions li:last-child { border-bottom: none; }
+
 .suggestions li button {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   text-align: left;
   background: none;
   border: none;
-  padding: 10px 16px;
+  padding: 10px 12px;
   font-size: 15px;
   font-family: var(--font-label);
   color: var(--ink);
   cursor: pointer;
-  border-bottom: 1px solid var(--line-soft);
 }
-.suggestions li:last-child button { border-bottom: none; }
 .suggestions li button:hover,
-.suggestions li button.active { background: var(--green-tint); }
-.suggestions .category { color: #7a7a72; font-size: 12px; }
+.suggestions li button.active { background: var(--paper-muted); }
 
 .hidden { display: none !important; }
 
@@ -124,6 +142,48 @@ body {
   font-family: var(--font-label);
 }
 .chip:hover { border-color: var(--green); color: var(--green); }
+
+.browse-label {
+  font-size: 12px;
+  color: #8a8a80;
+  margin: 1.5rem 0 0.6rem;
+}
+
+.category-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.cat-chip {
+  border: 2px solid var(--chip-color, #8a8a80);
+  color: var(--chip-color, #8a8a80);
+  background: var(--paper);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-label);
+}
+.cat-chip:hover {
+  background: var(--chip-color, #8a8a80);
+  color: #fff;
+}
+
+/* Small colour-coded category label used in suggestions + result header */
+.cat-badge {
+  display: inline-block;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
 
 .empty-state {
   text-align: center;
@@ -147,6 +207,14 @@ body {
   margin-bottom: 12px;
 }
 
+.result-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .result-name {
   font-family: var(--font-display);
   font-size: 26px;
@@ -167,7 +235,6 @@ body {
   margin: 6px 0 0;
 }
 
-/* Section labels: "Vitamins" / "Macros" / "Minerals" */
 .section-label {
   font-size: 11px;
   font-weight: 700;
@@ -206,7 +273,6 @@ body {
   margin: 3px 0 0;
 }
 
-/* Macro tiles: Carbs / Protein / Fat */
 .macro-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -234,7 +300,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Minerals: collapsed by default */
 .minerals-details {
   border-top: 1px solid var(--line-soft);
   padding-top: 10px;
@@ -279,4 +344,5 @@ body {
   .wordmark { font-size: 34px; }
   .page { padding: 2.5rem 1rem 2rem; }
   .macro-grid { gap: 6px; }
+  .cat-chip { font-size: 11px; padding: 5px 10px; }
 }
