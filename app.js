@@ -339,10 +339,43 @@ function renderCategories() {
   els.chips.querySelectorAll(".category-chip").forEach(btn => {
     btn.addEventListener("click", () => {
       const category = btn.dataset.category;
-      state.category = state.category === category ? null : category;
-      els.chips.querySelectorAll(".category-chip").forEach(b => b.classList.toggle("active", b === btn && state.category));
-      const first = state.foods.find(f => normaliseName(getCategory(f)) === normaliseName(category));
-      if (first && state.category) selectFood(first);
+      const wasActive = btn.classList.contains("active");
+      els.chips.querySelectorAll(".category-chip").forEach(b => b.classList.remove("active"));
+
+      if (wasActive) {
+        state.category = null;
+        els.suggestions.classList.remove("open");
+        els.suggestions.innerHTML = "";
+        return;
+      }
+
+      btn.classList.add("active");
+      state.category = category;
+      const matches = state.foods.filter(f => normaliseName(getCategory(f)) === normaliseName(category));
+      renderFoodList(matches);
+    });
+  });
+}
+
+function renderFoodList(foods) {
+  if (!foods.length) {
+    els.suggestions.classList.remove("open");
+    els.suggestions.innerHTML = "";
+    return;
+  }
+
+  els.suggestions.innerHTML = foods.map(food => `
+    <button class="suggestion" type="button" data-food-id="${esc(food.id ?? slugify(getFoodName(food)))}">
+      ${esc(getFoodName(food))}
+      <small>${esc(getCategory(food))} · per 100g</small>
+    </button>
+  `).join("");
+
+  els.suggestions.classList.add("open");
+  els.suggestions.querySelectorAll(".suggestion").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const food = state.foods.find(f => String(f.id ?? slugify(getFoodName(f))) === btn.dataset.foodId);
+      if (food) selectFood(food);
     });
   });
 }
@@ -677,7 +710,7 @@ els.search.addEventListener("keydown", e => {
 });
 
 document.addEventListener("click", e => {
-  if (!e.target.closest(".global-search")) els.suggestions.classList.remove("open");
+  if (!e.target.closest(".global-search") && !e.target.closest(".category-chips")) els.suggestions.classList.remove("open");
 });
 
 loadFoods();
