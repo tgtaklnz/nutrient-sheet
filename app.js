@@ -1,17 +1,19 @@
+
+App · JS
 const state = {
   foods: [],
   selectedFood: null,
   category: null,
   searchTimer: null
 };
-
+ 
 const els = {
   search: document.getElementById("food-search"),
   suggestions: document.getElementById("search-suggestions"),
   chips: document.getElementById("category-chips"),
   profile: document.getElementById("food")
 };
-
+ 
 const NAMES = {
   calories: ["energy", "calories", "energy (kcal)", "energy, kcal"],
   protein: ["protein"],
@@ -19,25 +21,25 @@ const NAMES = {
   fat: ["total lipid", "total lipid (fat)", "fat", "total fat"],
   fibre: ["fiber", "fibre", "fiber, total dietary", "fibre, total dietary"],
 };
-
+ 
 const VITAMIN_HINTS = [
   "vitamin a", "vitamin b1", "thiamin", "vitamin b2", "riboflavin",
   "vitamin b3", "niacin", "vitamin b5", "pantothenic",
   "vitamin b6", "vitamin b7", "biotin", "vitamin b9", "folate",
   "vitamin b12", "vitamin c", "vitamin d", "vitamin e", "vitamin k", "choline"
 ];
-
+ 
 const CATEGORY_ORDER = [
   "Vegetable", "Fruit", "Grains", "Legumes", "Nuts and seeds",
   "Meat and poultry", "Seafood", "Dairy and eggs", "Herbs and spices"
 ];
-
+ 
 function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
     "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
   }[c]));
 }
-
+ 
 function slugify(value) {
   return String(value || "")
     .toLowerCase().trim()
@@ -45,25 +47,25 @@ function slugify(value) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 }
-
+ 
 function normaliseName(value) {
   return String(value || "").toLowerCase().trim().replace(/\s+/g, " ");
 }
-
+ 
 function nutrientName(n) {
   return String(n?.name ?? n?.nutrientName ?? n?.nutrient?.name ?? "").trim();
 }
-
+ 
 function nutrientValue(n) {
   const value = n?.value ?? n?.amount ?? n?.nutrientValue ?? n?.nutrient?.value;
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
 }
-
+ 
 function nutrientUnit(n) {
   return String(n?.unit ?? n?.unitName ?? n?.nutrient?.unitName ?? "").trim();
 }
-
+ 
 function getNutrients(food) {
   const raw = food?.nutrients ?? food?.nutrition ?? food?.nutrientData ?? [];
   if (Array.isArray(raw)) return raw;
@@ -72,7 +74,7 @@ function getNutrients(food) {
   }
   return [];
 }
-
+ 
 function findNutrient(food, aliases) {
   const nutrients = getNutrients(food);
   const exact = nutrients.find(n => {
@@ -85,42 +87,42 @@ function findNutrient(food, aliases) {
     return aliases.some(a => name.includes(normaliseName(a)));
   }) || null;
 }
-
+ 
 function valueOf(food, key) {
   const n = findNutrient(food, NAMES[key]);
   return n ? nutrientValue(n) : null;
 }
-
+ 
 function unitOf(food, key, fallback = "g") {
   const n = findNutrient(food, NAMES[key]);
   return n ? nutrientUnit(n) || fallback : fallback;
 }
-
+ 
 function getFoodName(food) {
   return food?.name ?? food?.food ?? food?.description ?? food?.fdcDescription ?? "Unknown food";
 }
-
+ 
 function getCategory(food) {
   return food?.category ?? food?.group ?? food?.foodCategory ?? "Other";
 }
-
+ 
 function getAliases(food) {
   const aliases = food?.aliases ?? food?.alias ?? [];
   return Array.isArray(aliases) ? aliases : [];
 }
-
+ 
 function getImage(food) {
   return food?.image ?? food?.imageUrl ?? food?.imageURL ?? food?.photo ?? "";
 }
-
+ 
 function getFdcId(food) {
   return food?.fdcId ?? food?.fdc_id ?? food?.fdcID ?? "";
 }
-
+ 
 function getDescription(food) {
   return food?.description ?? food?.summary ?? "";
 }
-
+ 
 function formatNumber(value, max = 1) {
   if (value == null || !Number.isFinite(Number(value))) return "—";
   const n = Number(value);
@@ -128,26 +130,26 @@ function formatNumber(value, max = 1) {
   if (Math.abs(n) >= 10) return n.toFixed(Math.min(1, max));
   return n.toFixed(max);
 }
-
+ 
 function formatNutrient(n) {
   if (!n) return "—";
   const value = nutrientValue(n);
   if (value == null) return "—";
   return `${formatNumber(value, value < 1 ? 2 : 1)} ${esc(nutrientUnit(n))}`;
 }
-
+ 
 function isVitamin(name) {
   const n = normaliseName(name);
   return VITAMIN_HINTS.some(h => n.includes(h));
 }
-
+ 
 function getVitaminList(food) {
   return getNutrients(food)
     .filter(n => nutrientValue(n) != null && isVitamin(nutrientName(n)))
     .filter(n => !/energy|calorie/i.test(nutrientName(n)))
     .sort((a,b) => (nutrientValue(b) || 0) - (nutrientValue(a) || 0));
 }
-
+ 
 function getMineralList(food) {
   return getNutrients(food)
     .filter(n => nutrientValue(n) != null)
@@ -158,7 +160,7 @@ function getMineralList(food) {
     })
     .sort((a,b) => (nutrientValue(b) || 0) - (nutrientValue(a) || 0));
 }
-
+ 
 function caloriesFromMacros(food) {
   const protein = valueOf(food, "protein") || 0;
   const carbs = valueOf(food, "carbs") || 0;
@@ -169,24 +171,24 @@ function caloriesFromMacros(food) {
     fat: fat * 9
   };
 }
-
+ 
 function nutritionTags(food) {
   const protein = valueOf(food, "protein") ?? 0;
   const carbs = valueOf(food, "carbs") ?? 0;
   const fat = valueOf(food, "fat") ?? 0;
   const fibre = valueOf(food, "fibre") ?? 0;
   const tags = [];
-
+ 
   if (protein >= 20) tags.push("High in Protein");
   else if (protein >= 10) tags.push("Protein Source");
-
+ 
   if (carbs <= 5) tags.push("Low in Carbohydrate");
   if (fat <= 3) tags.push("Low in Fat");
   if (fibre >= 5) tags.push("High in Fibre");
-
+ 
   return tags.slice(0, 3);
 }
-
+ 
 function generatedInsight(food) {
   const name = getFoodName(food);
   const protein = valueOf(food, "protein") ?? 0;
@@ -194,7 +196,7 @@ function generatedInsight(food) {
   const fat = valueOf(food, "fat") ?? 0;
   const fibre = valueOf(food, "fibre") ?? 0;
   const vitamins = getVitaminList(food).slice(0, 3).map(nutrientName).filter(Boolean);
-
+ 
   let lead;
   if (protein >= 20 && carbs <= 5) {
     lead = `${name} is predominantly a protein food, with very little carbohydrate per 100g.`;
@@ -207,18 +209,18 @@ function generatedInsight(food) {
   } else {
     lead = `${name} provides a combination of macronutrients and micronutrients that can be explored below.`;
   }
-
+ 
   let second = "";
   if (vitamins.length) {
     second = ` Notable nutrients in the available data include ${vitamins.join(", ")}.`;
   }
   return `${lead}${second}`;
 }
-
+ 
 function commonPreparation(food) {
   const name = getFoodName(food).toLowerCase();
   const category = getCategory(food).toLowerCase();
-
+ 
   if (/chicken|turkey|beef|lamb|pork|meat/.test(name)) {
     return [
       ["Grilled", "A simple method that adds flavour through browning."],
@@ -266,14 +268,14 @@ function commonPreparation(food) {
     ["With vegetables", "Pairing with vegetables adds variety to a meal."]
   ];
 }
-
+ 
 function faqData(food) {
   const name = getFoodName(food);
   const protein = valueOf(food, "protein") ?? 0;
   const carbs = valueOf(food, "carbs") ?? 0;
   const fat = valueOf(food, "fat") ?? 0;
   const fibre = valueOf(food, "fibre") ?? 0;
-
+ 
   return [
     {
       q: `Is ${name} a good source of protein?`,
@@ -297,7 +299,7 @@ function faqData(food) {
     }
   ];
 }
-
+ 
 function scoreSimilarity(a, b) {
   const av = [valueOf(a,"protein"), valueOf(a,"carbs"), valueOf(a,"fat"), valueOf(a,"fibre")].map(x => x ?? 0);
   const bv = [valueOf(b,"protein"), valueOf(b,"carbs"), valueOf(b,"fat"), valueOf(b,"fibre")].map(x => x ?? 0);
@@ -306,7 +308,7 @@ function scoreSimilarity(a, b) {
   for (let i=0; i<4; i++) score += Math.max(0, 2 - Math.abs(av[i]-bv[i]) / scales[i]);
   return score;
 }
-
+ 
 function similarFoods(food) {
   return state.foods
     .filter(f => f !== food)
@@ -315,7 +317,7 @@ function similarFoods(food) {
     .slice(0, 5)
     .map(x => x.food);
 }
-
+ 
 function macroPercentages(food) {
   const m = caloriesFromMacros(food);
   const total = m.protein + m.carbs + m.fat;
@@ -326,29 +328,29 @@ function macroPercentages(food) {
     fat: Math.round(m.fat / total * 100)
   };
 }
-
+ 
 function renderCategories() {
   const present = [...new Set(state.foods.map(getCategory).filter(Boolean))];
   const categories = CATEGORY_ORDER.filter(c => present.some(p => normaliseName(p) === normaliseName(c)))
     .concat(present.filter(c => !CATEGORY_ORDER.some(x => normaliseName(x) === normaliseName(c))));
-
+ 
   els.chips.innerHTML = categories.map(category =>
     `<button class="category-chip" data-category="${esc(category)}">${esc(category)}</button>`
   ).join("");
-
+ 
   els.chips.querySelectorAll(".category-chip").forEach(btn => {
     btn.addEventListener("click", () => {
       const category = btn.dataset.category;
       const wasActive = btn.classList.contains("active");
       els.chips.querySelectorAll(".category-chip").forEach(b => b.classList.remove("active"));
-
+ 
       if (wasActive) {
         state.category = null;
         els.suggestions.classList.remove("open");
         els.suggestions.innerHTML = "";
         return;
       }
-
+ 
       btn.classList.add("active");
       state.category = category;
       const matches = state.foods.filter(f => normaliseName(getCategory(f)) === normaliseName(category));
@@ -356,21 +358,21 @@ function renderCategories() {
     });
   });
 }
-
+ 
 function renderFoodList(foods) {
   if (!foods.length) {
     els.suggestions.classList.remove("open");
     els.suggestions.innerHTML = "";
     return;
   }
-
+ 
   els.suggestions.innerHTML = foods.map(food => `
     <button class="suggestion" type="button" data-food-id="${esc(food.id ?? slugify(getFoodName(food)))}">
       ${esc(getFoodName(food))}
       <small>${esc(getCategory(food))} · per 100g</small>
     </button>
   `).join("");
-
+ 
   els.suggestions.classList.add("open");
   els.suggestions.querySelectorAll(".suggestion").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -379,28 +381,28 @@ function renderFoodList(foods) {
     });
   });
 }
-
+ 
 function searchFoods(query) {
   const q = normaliseName(query);
   if (!q) return [];
-
+ 
   return state.foods.map(food => {
     const name = normaliseName(getFoodName(food));
     const aliases = getAliases(food).map(normaliseName);
     const category = normaliseName(getCategory(food));
     let score = 0;
-
+ 
     if (name === q) score += 1000;
     else if (name.startsWith(q)) score += 700;
     else if (name.includes(q)) score += 400;
     if (aliases.some(a => a === q)) score += 900;
     else if (aliases.some(a => a.startsWith(q))) score += 500;
     if (category.includes(q)) score += 100;
-
+ 
     return { food, score };
   }).filter(x => x.score > 0).sort((a,b) => b.score - a.score).slice(0, 7);
 }
-
+ 
 function renderSuggestions(query) {
   const results = searchFoods(query);
   if (!query || !results.length) {
@@ -408,14 +410,14 @@ function renderSuggestions(query) {
     els.suggestions.innerHTML = "";
     return;
   }
-
+ 
   els.suggestions.innerHTML = results.map(({food}) => `
     <button class="suggestion" type="button" data-food-id="${esc(food.id ?? slugify(getFoodName(food)))}">
       ${esc(getFoodName(food))}
       <small>${esc(getCategory(food))} · per 100g</small>
     </button>
   `).join("");
-
+ 
   els.suggestions.classList.add("open");
   els.suggestions.querySelectorAll(".suggestion").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -424,7 +426,7 @@ function renderSuggestions(query) {
     });
   });
 }
-
+ 
 function metric(label, value, unit) {
   return `<div class="metric">
     <span class="metric-label">${label}</span>
@@ -432,7 +434,7 @@ function metric(label, value, unit) {
     <span class="metric-unit">${unit}</span>
   </div>`;
 }
-
+ 
 function renderFoodImage(food) {
   const image = getImage(food);
   if (image) {
@@ -440,18 +442,18 @@ function renderFoodImage(food) {
   }
   return `<div class="food-placeholder" aria-hidden="true">✿</div>`;
 }
-
+ 
 function renderVitamins(food) {
   const vitamins = getVitaminList(food);
   const shown = vitamins.slice(0, 5);
-
+ 
   if (!shown.length) {
     return `<section class="card section-card">
       <div class="section-heading"><h3>Key vitamins</h3><span>per 100g</span></div>
       <p class="muted">Vitamin information is not available in this food record.</p>
     </section>`;
   }
-
+ 
   return `<section class="card section-card">
     <div class="section-heading"><h3>Key vitamins</h3><span>per 100g</span></div>
     <div class="vitamin-grid">
@@ -466,7 +468,7 @@ function renderVitamins(food) {
     ${vitamins.length > 5 ? `<a class="text-link" href="#all-vitamins">View all vitamins →</a>` : ""}
   </section>`;
 }
-
+ 
 function renderMinerals(food) {
   const minerals = getMineralList(food).slice(0, 12);
   return `<section class="card mineral-card">
@@ -487,7 +489,7 @@ function renderMinerals(food) {
     </div>
   </section>`;
 }
-
+ 
 function renderPreparation(food) {
   const items = commonPreparation(food);
   return `<section class="card section-card">
@@ -503,7 +505,7 @@ function renderPreparation(food) {
     <a class="text-link" href="#preparation">More preparation ideas →</a>
   </section>`;
 }
-
+ 
 function renderSimilar(food) {
   const similar = similarFoods(food);
   return `<section class="card section-card" id="compare">
@@ -530,7 +532,7 @@ function renderSimilar(food) {
     <a class="text-link" href="#compare">Compare more foods →</a>
   </section>`;
 }
-
+ 
 function renderFaq(food) {
   return `<section class="card section-card">
     <div class="section-heading"><h3>Frequently asked questions</h3></div>
@@ -545,7 +547,7 @@ function renderFaq(food) {
     <a class="text-link" href="#faq">View more FAQs →</a>
   </section>`;
 }
-
+ 
 function renderSource(food) {
   const fdcId = getFdcId(food);
   return `<section class="card side-card source-card">
@@ -557,7 +559,7 @@ function renderSource(food) {
     <a class="text-link" href="#about">Learn more about our data and methodology →</a>
   </section>`;
 }
-
+ 
 function renderCharacteristics(food) {
   const tags = nutritionTags(food);
   const characteristics = tags.length ? tags : ["Nutrient profile shown per 100g", "USDA-sourced nutrient data"];
@@ -568,7 +570,7 @@ function renderCharacteristics(food) {
     </div>
   </section>`;
 }
-
+ 
 function renderProfile(food) {
   state.selectedFood = food;
   const name = getFoodName(food);
@@ -578,16 +580,16 @@ function renderProfile(food) {
   const fat = valueOf(food,"fat");
   const fibre = valueOf(food,"fibre");
   const macro = macroPercentages(food);
-
+ 
   const image = renderFoodImage(food);
   const description = getDescription(food);
-
+ 
   els.profile.innerHTML = `
     <div class="food-title-row">
       <h2>${esc(name)}</h2>
       <div class="food-meta">Per 100g <span>•</span> USDA FoodData Central ${getFdcId(food) ? `· FDC ${esc(getFdcId(food))}` : ""}</div>
     </div>
-
+ 
     <div class="food-grid">
       <div class="left-column">
         <section class="card insight-card">
@@ -601,7 +603,7 @@ function renderProfile(food) {
           </div>
           <div class="food-image">${image}</div>
         </section>
-
+ 
         <section class="card section-card">
           <div class="section-heading"><h3>Nutrition summary</h3><span>per 100g</span></div>
           <div class="metric-grid">
@@ -611,7 +613,7 @@ function renderProfile(food) {
             ${metric("Fat", formatNumber(fat,1), "g")}
             ${metric("Fibre", formatNumber(fibre,1), "g")}
           </div>
-
+ 
           <div class="macro-wrap">
             <div class="section-heading"><h3>Macro breakdown</h3><span>calories</span></div>
             <div class="macro-bar" aria-label="Macro breakdown">
@@ -626,17 +628,17 @@ function renderProfile(food) {
             </div>
           </div>
         </section>
-
+ 
         ${renderVitamins(food)}
-
+ 
         <div class="lower-grid">
           ${renderPreparation(food)}
           ${renderSimilar(food)}
         </div>
-
+ 
         ${renderFaq(food)}
       </div>
-
+ 
       <aside class="right-column">
         ${renderMinerals(food)}
         ${renderCharacteristics(food)}
@@ -644,7 +646,7 @@ function renderProfile(food) {
       </aside>
     </div>
   `;
-
+ 
   els.profile.querySelector("#mineral-toggle")?.addEventListener("click", e => {
     const button = e.currentTarget;
     const list = els.profile.querySelector("#mineral-list");
@@ -652,21 +654,21 @@ function renderProfile(food) {
     button.classList.toggle("active", open);
     button.setAttribute("aria-expanded", String(open));
   });
-
+ 
   els.profile.querySelectorAll(".faq").forEach(faq => {
     faq.querySelector("button").addEventListener("click", () => {
       faq.classList.toggle("open");
       faq.querySelector("button span").textContent = faq.classList.contains("open") ? "−" : "+";
     });
   });
-
+ 
   els.search.value = name;
   els.suggestions.classList.remove("open");
   document.title = `${name} Nutrition Facts | NutriLook`;
   document.getElementById("breadcrumb").innerHTML =
     `Home <span>›</span> ${esc(getCategory(food))} <span>›</span> ${esc(name)}`;
 }
-
+ 
 function selectFood(food) {
   state.category = getCategory(food);
   els.chips.querySelectorAll(".category-chip").forEach(btn => {
@@ -675,7 +677,7 @@ function selectFood(food) {
   renderProfile(food);
   document.getElementById("food").scrollIntoView({ behavior: "smooth", block: "start" });
 }
-
+ 
 async function loadFoods() {
   try {
     const response = await fetch("foods.json", { cache: "no-store" });
@@ -683,7 +685,7 @@ async function loadFoods() {
     const data = await response.json();
     state.foods = Array.isArray(data) ? data : (data.foods || data.items || []);
     renderCategories();
-
+ 
     const initial = searchFoods("egg")[0]?.food || state.foods[0];
     if (initial) renderProfile(initial);
   } catch (error) {
@@ -695,22 +697,38 @@ async function loadFoods() {
       </div>`;
   }
 }
-
+ 
 els.search.addEventListener("input", e => {
   clearTimeout(state.searchTimer);
   const query = e.target.value;
   state.searchTimer = setTimeout(() => renderSuggestions(query), 80);
 });
-
+ 
+function submitSearch() {
+  const result = searchFoods(els.search.value)[0];
+  if (result) selectFood(result.food);
+}
+ 
 els.search.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    const result = searchFoods(els.search.value)[0];
-    if (result) selectFood(result.food);
-  }
+  if (e.key === "Enter") submitSearch();
 });
-
+ 
+document.getElementById("search-submit").addEventListener("click", submitSearch);
+ 
 document.addEventListener("click", e => {
   if (!e.target.closest(".global-search") && !e.target.closest(".category-chips")) els.suggestions.classList.remove("open");
 });
-
+ 
 loadFoods();
+ 
+
+
+
+
+
+
+
+
+
+
+
