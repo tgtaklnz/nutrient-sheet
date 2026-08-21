@@ -64,7 +64,8 @@
         "context": "Needed to carry oxygen in the blood."
       }
     ],
-    "fdcId": null
+    "fdcId": null,
+    "image": "https://images.pexels.com/photos/7195272/pexels-photo-7195272.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
   },
   {
     "id": "kale",
@@ -305,7 +306,8 @@
         "context": "Involved in muscle and nerve function."
       }
     ],
-    "fdcId": 173944
+    "fdcId": 173944,
+    "image": "https://images.pexels.com/photos/5945848/pexels-photo-5945848.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop"
   },
   {
     "id": "orange",
