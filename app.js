@@ -434,11 +434,8 @@ function metric(label, value, unit) {
 }
 
 function renderFoodImage(food) {
-  const image = getImage(food);
-  if (image) {
-    return `<img src="${esc(image)}" alt="${esc(getFoodName(food))}" loading="lazy">`;
-  }
-  return `<div class="food-placeholder" aria-hidden="true">✿</div>`;
+  const primary = `images/${food.id}.jpg`;
+  return `<img src="${esc(primary)}" alt="${esc(getFoodName(food))}" loading="lazy" onerror="this.onerror=null;this.src='images/Image-pending.jpg';">`;
 }
 
 function renderVitamins(food) {
